@@ -1,5 +1,7 @@
 # go-create-image-backup
 
+[![wercker status](https://app.wercker.com/status/e49ed2149efc24b7a997fd6ee35578bb/s/master "wercker status")](https://app.wercker.com/project/byKey/e49ed2149efc24b7a997fd6ee35578bb)
+
 backup tool with AWS Amazon machine image(AMI) written by Go.
 
 ## Features
