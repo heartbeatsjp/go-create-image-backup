@@ -4,4 +4,4 @@ package main
 const Name = "go-create-image-backup"
 
 // Version is the application version
-const Version = "0.9.0"
+const Version = "1.0.0"
