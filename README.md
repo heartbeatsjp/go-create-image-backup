@@ -48,6 +48,16 @@ Usage of go-create-image-backup:
     	print version information
 ```
 
+## Example
+
+Create new machine image `ami-1234567890abcdef0` and deregister machine image `ami-1234567890abcdef1`, `ami-1234567890abcdef2` 
+
+```
+$ go-create-image-backup -service-tag daily -backup-generation 3
+create image: ami-1234567890abcdef0
+deregister images: ami-1234567890abcdef1
+```
+
 ## Author
 
 [Takatada Yoshima](https://github.com/shiimaxx)
