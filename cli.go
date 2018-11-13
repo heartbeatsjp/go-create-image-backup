@@ -31,6 +31,7 @@ type cliFlags struct {
 	service    string
 	version    bool
 	to         string
+	from       string
 	server     string
 	port       int
 }
@@ -50,8 +51,10 @@ func (c *CLI) Run(args []string) int {
 	flags.BoolVar(&c.flags.version, "version", false, "print version information")
 	flags.BoolVar(&c.flags.version, "v", false, "print version information(Short)")
 
-	flags.StringVar(&c.flags.to, "mail-to", "", "address to e-mail notification")
-	flags.StringVar(&c.flags.to, "t", "", "address to e-mail notification(Short)")
+	flags.StringVar(&c.flags.to, "mail-to", "", "to-address of email notification")
+	flags.StringVar(&c.flags.to, "t", "", "to-address of email notification(Short)")
+	flags.StringVar(&c.flags.from, "mail-from", "", "from-address of email notification")
+	flags.StringVar(&c.flags.from, "f", "", "from-address of email notification(Short)")
 	flags.StringVar(&c.flags.server, "mail-server", "localhost", "address of mail server")
 	flags.StringVar(&c.flags.server, "m", "localhost", "address of mail server(Short)")
 	flags.IntVar(&c.flags.port, "mail-server-port", 25, "port number of mail server")
@@ -64,7 +67,11 @@ func (c *CLI) Run(args []string) int {
 	if err != nil {
 		fmt.Fprint(c.errStream, err.Error())
 		if c.flags.to != "" && code == ExitCodeAWSError {
-			if mailerr := c.mail.Send(c.flags.to, c.flags.server, err.Error(), c.flags.port); mailerr != nil {
+			from := c.flags.from
+			if from == "" {
+				from = "go-create-image-backup@localhost.localdomain"
+			}
+			if mailerr := c.mail.Send(from, c.flags.to, c.flags.server, err.Error(), c.flags.port); mailerr != nil {
 				fmt.Fprintf(c.errStream, mailerr.Error())
 			}
 		}

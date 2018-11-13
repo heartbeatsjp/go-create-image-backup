@@ -19,33 +19,37 @@ Usage of go-create-image-backup:
     	number of backup generation (default 10)
   -g int
     	number of backup generation(Short) (default 10)
-  -i string
-    	instance id(Short)
   -instance-id string
     	instance id
-  -r string
-    	region(Short)
+  -i string
+    	instance id(Short)
   -region string
     	region
-  -s string
-    	value of Service tag(Short)
+  -r string
+    	region(Short)
   -service-tag string
     	value of Service tag
+  -s string
+    	value of Service tag(Short)
+  -mail-from string
+        from-address of email notification
+  -f string
+        from-address of email notification(Short)
+  -mail-to string
+        to-address of email notification
   -t string
-      set your mail address , if you want e-mail notification when backup failure(Short)
-  -mail-to
-      set your mail address , if you want e-mail notification when backup failure
-  -m string
-      mail server address (default localhost)(Short)
+        to-address of email notification(Short)
   -mail-server
       mail server address (default localhost)
-  -p int
-      mail server's port (default 25)(Short)
+  -m string
+      mail server address (default localhost)(Short)
   -port int
       mail server's port (default 25)
-  -v	print version information(Short)
+  -p int
+      mail server's port (default 25)(Short)      
   -version
     	print version information
+  -v	print version information(Short)
 ```
 
 ## Example

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"os"
-
 	"gopkg.in/gomail.v2"
 )
 
@@ -12,14 +10,9 @@ type Mail interface {
 
 type MailClient struct{}
 
-func (m *MailClient) Send(mailTo, host, body string, port int) error {
-	hostname, err := os.Hostname()
-	if err != nil {
-		return err
-	}
-
+func (m *MailClient) Send(mailFrom, mailTo, host, body string, port int) error {
 	message := gomail.NewMessage()
-	message.SetHeader("From", hostname+"@heartbeats.jp")
+	message.SetHeader("From", mailFrom)
 	message.SetHeader("To", mailTo)
 	message.SetHeader("Subject", "Backup failed")
 	message.SetBody("text/plain", body)
