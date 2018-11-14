@@ -227,6 +227,9 @@ func (client *AWSClient) DeregisterImages(ctx context.Context, images []*ec2.Ima
 			ImageId: image.ImageId,
 		})
 		for _, d := range image.BlockDeviceMappings {
+			if d.Ebs == nil {
+				continue
+			}
 			client.svcEC2.DeleteSnapshot(&ec2.DeleteSnapshotInput{
 				SnapshotId: d.Ebs.SnapshotId,
 			})
