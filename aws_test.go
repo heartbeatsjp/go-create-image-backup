@@ -474,3 +474,40 @@ func TestDeregisterImages(t *testing.T) {
 		t.Fatal("DeregisterImages failed: ", err)
 	}
 }
+
+func TestDeregisterImagesUseEphemeralDisk(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockEC2 := mock.NewMockEC2API(mockCtrl)
+	mockEC2.EXPECT().DeregisterImageWithContext(
+		context.TODO(),
+		&ec2.DeregisterImageInput{
+			ImageId: aws.String("ami-1234567890abcdef0"),
+		}).Return(&ec2.DeregisterImageOutput{}, nil)
+	mockEC2.EXPECT().DeleteSnapshot(&ec2.DeleteSnapshotInput{
+		SnapshotId: aws.String("snap-1234567890abcdef0"),
+	}).Return(&ec2.DeleteSnapshotOutput{}, nil)
+
+	client := AWSClient{
+		svcEC2: mockEC2,
+	}
+
+	i := []*ec2.Image{
+		{
+			ImageId: aws.String("ami-1234567890abcdef0"),
+			BlockDeviceMappings: []*ec2.BlockDeviceMapping{
+				{
+					DeviceName: aws.String("/dev/sda"),
+					Ebs:        &ec2.EbsBlockDevice{SnapshotId: aws.String("snap-1234567890abcdef0")},
+				},
+				{
+					DeviceName: aws.String("/dev/ephemeral0"),
+				},
+			},
+		},
+	}
+	if err := client.DeregisterImages(context.TODO(), i); err != nil {
+		t.Fatal("DeregisterImages failed: ", err)
+	}
+}
