@@ -18,7 +18,14 @@ type Backup struct {
 	Region     string
 	Generation int
 	Service    string
+	CustomTags []Tag
 	Client     AWS
+}
+
+// Tag is key-value formatted metadata for backup
+type Tag struct {
+	name  string
+	value string
 }
 
 // Create Amazon Machine Image(AMI) as instance's backup.
