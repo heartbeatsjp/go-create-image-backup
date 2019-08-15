@@ -146,7 +146,7 @@ func (client *AWSClient) CreateTags(ctx context.Context, resourceID string, tags
 				if err != nil {
 					continue
 				}
-				if len(result.Images[0].Tags) == 3 {
+				if len(result.Images[0].Tags) == len(tags) {
 					doneCh <- struct{}{}
 					return
 				}
@@ -158,7 +158,7 @@ func (client *AWSClient) CreateTags(ctx context.Context, resourceID string, tags
 				if err != nil {
 					continue
 				}
-				if len(result.Snapshots[0].Tags) == 3 {
+				if len(result.Snapshots[0].Tags) == len(tags) {
 					doneCh <- struct{}{}
 					return
 				}
