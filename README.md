@@ -31,9 +31,9 @@ Usage of go-create-image-backup:
     	value of Service tag
   -s string
     	value of Service tag(Short)
-  -custom-tag key1:val1,key2:val2..
+  -custom-tag key1:val1,key2:val2,...
         value of Cunstom tags
-  -c key1:val1,key2:val2..
+  -c key1:val1,key2:val2,...
         value of Cunstom tags(Short)
   -mail-from string
         from-address of email notification
@@ -50,7 +50,7 @@ Usage of go-create-image-backup:
   -port int
       mail server's port (default 25)
   -p int
-      mail server's port (default 25)(Short)      
+      mail server's port (default 25)(Short)
   -version
     	print version information
   -v	print version information(Short)
@@ -58,7 +58,7 @@ Usage of go-create-image-backup:
 
 ## Example
 
-Create new machine image `ami-1234567890abcdef0` and deregister machine image `ami-1234567890abcdef1`, `ami-1234567890abcdef2` 
+Create new machine image `ami-1234567890abcdef0` and deregister machine image `ami-1234567890abcdef1`, `ami-1234567890abcdef2`
 
 ```
 $ go-create-image-backup -service-tag daily -backup-generation 3
