@@ -108,13 +108,6 @@ func (c *CLI) Run(args []string) int {
 		return ExitCodeFlagParseError
 	}
 
-	if len(c.flags.customTags) > 0 {
-		for _, t := range c.flags.customTags {
-			fmt.Printf("%s:%s\n", t.Key, t.Value)
-		}
-		return ExitCodeOK
-	}
-
 	code, err := c.run()
 	if err != nil {
 		fmt.Fprint(c.errStream, err.Error())
