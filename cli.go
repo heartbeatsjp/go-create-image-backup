@@ -91,8 +91,8 @@ func (c *CLI) Run(args []string) int {
 	flags.StringVar(&c.flags.region, "r", "", "region(Short)")
 	flags.StringVar(&c.flags.service, "service-tag", "", "value of Service tag")
 	flags.StringVar(&c.flags.service, "s", "", "value of Service tag(Short)")
-	flags.Var(newTagSliceValue("", &c.flags.customTags), "custom-tags", "")
-	flags.Var(newTagSliceValue("", &c.flags.customTags), "c", "")
+	flags.Var(newTagSliceValue("", &c.flags.customTags), "custom-tags", "key-value of Cunstom tags")
+	flags.Var(newTagSliceValue("", &c.flags.customTags), "c", "key-value of Cunstom tags(Short)")
 	flags.BoolVar(&c.flags.version, "version", false, "print version information")
 	flags.BoolVar(&c.flags.version, "v", false, "print version information(Short)")
 
