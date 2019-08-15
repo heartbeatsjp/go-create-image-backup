@@ -59,7 +59,7 @@ func (s *tagSliceValue) Set(val string) error {
 			return errors.New("parse error")
 		}
 
-		tags = append(tags, Tag{name: kv[0], value: kv[1]})
+		tags = append(tags, Tag{Key: kv[0], Value: kv[1]})
 	}
 
 	*s = tagSliceValue(tags)
@@ -110,7 +110,7 @@ func (c *CLI) Run(args []string) int {
 
 	if len(c.flags.customTags) > 0 {
 		for _, t := range c.flags.customTags {
-			fmt.Printf("%s:%s\n", t.name, t.value)
+			fmt.Printf("%s:%s\n", t.Key, t.Value)
 		}
 		return ExitCodeOK
 	}

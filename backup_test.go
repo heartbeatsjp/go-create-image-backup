@@ -28,6 +28,8 @@ func TestCreate(t *testing.T) {
 			{Key: aws.String("BackupType"), Value: aws.String("auto")},
 			{Key: aws.String("Name"), Value: aws.String("test")},
 			{Key: aws.String("Service"), Value: aws.String("service")},
+			{Key: aws.String("key1"), Value: aws.String("val1")},
+			{Key: aws.String("key2"), Value: aws.String("val2")},
 		}).Return(nil)
 	mockAWSClient.EXPECT().GetSnapshots(context.TODO(), "ami-1234567890abcdef0").Return(
 		[]string{"snap-1234567890abcdef0", "snap-1234567890abcdef1", "snap-1234567890abcdef2"},
@@ -39,6 +41,8 @@ func TestCreate(t *testing.T) {
 			{Key: aws.String("BackupType"), Value: aws.String("auto")},
 			{Key: aws.String("Name"), Value: aws.String("test")},
 			{Key: aws.String("Service"), Value: aws.String("service")},
+			{Key: aws.String("key1"), Value: aws.String("val1")},
+			{Key: aws.String("key2"), Value: aws.String("val2")},
 		}).Return(nil).After(createAMITag)
 	createSnapTag2 := mockAWSClient.EXPECT().CreateTags(
 		context.TODO(),
@@ -47,6 +51,8 @@ func TestCreate(t *testing.T) {
 			{Key: aws.String("BackupType"), Value: aws.String("auto")},
 			{Key: aws.String("Name"), Value: aws.String("test")},
 			{Key: aws.String("Service"), Value: aws.String("service")},
+			{Key: aws.String("key1"), Value: aws.String("val1")},
+			{Key: aws.String("key2"), Value: aws.String("val2")},
 		}).Return(nil).After(createSnapTag1)
 	mockAWSClient.EXPECT().CreateTags(
 		context.TODO(),
@@ -55,13 +61,19 @@ func TestCreate(t *testing.T) {
 			{Key: aws.String("BackupType"), Value: aws.String("auto")},
 			{Key: aws.String("Name"), Value: aws.String("test")},
 			{Key: aws.String("Service"), Value: aws.String("service")},
+			{Key: aws.String("key1"), Value: aws.String("val1")},
+			{Key: aws.String("key2"), Value: aws.String("val2")},
 		}).Return(nil).After(createSnapTag2)
 
 	backup := &Backup{
 		InstanceID: "i-1234567890abcdef0",
 		Name:       "test",
 		Service:    "service",
-		Client:     mockAWSClient,
+		CustomTags: []Tag{
+			{Key: "key1", Value: "val1"},
+			{Key: "key2", Value: "val2"},
+		},
+		Client: mockAWSClient,
 	}
 
 	got, err := backup.Create(context.TODO())

@@ -24,8 +24,8 @@ type Backup struct {
 
 // Tag is key-value formatted metadata for backup
 type Tag struct {
-	name  string
-	value string
+	Key  string
+	Value string
 }
 
 // Create Amazon Machine Image(AMI) as instance's backup.
@@ -52,6 +52,18 @@ func (b *Backup) Create(ctx context.Context) (string, error) {
 			Value: aws.String(b.Service),
 		},
 	}
+
+	if len(b.CustomTags) > 0 {
+		var customTags []*ec2.Tag
+		for _, t := range b.CustomTags {
+			customTags = append(customTags, &ec2.Tag{
+				Key:   aws.String(t.Key),
+				Value: aws.String(t.Value),
+			})
+		}
+		tag = append(tag, customTags...)
+	}
+
 	if err := b.Client.CreateTags(ctx, imageID, tag); err != nil {
 		return "", err
 	}
