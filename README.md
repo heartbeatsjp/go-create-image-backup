@@ -31,6 +31,10 @@ Usage of go-create-image-backup:
     	value of Service tag
   -s string
     	value of Service tag(Short)
+  -custom-tag key1:val1,key2:val2..
+        value of Cunstom tags
+  -c key1:val1,key2:val2..
+        value of Cunstom tags(Short)
   -mail-from string
         from-address of email notification
   -f string
