@@ -42,7 +42,11 @@ type cliFlags struct {
 type tagSliceValue []Tag
 
 func (s *tagSliceValue) String() string {
-	return "testtest"
+	var tagStrs []string
+	for _, t := range *s {
+		tagStrs = append(tagStrs, fmt.Sprintf("%s:%s", t.Key, t.Value))
+	}
+	return strings.Join(tagStrs, ",")
 }
 
 func (s *tagSliceValue) Set(val string) error {
