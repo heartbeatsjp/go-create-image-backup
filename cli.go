@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 // Exit codes are int values that represent an exit code for a particular error.
@@ -29,11 +31,56 @@ type cliFlags struct {
 	generation int
 	region     string
 	service    string
+	customTags []Tag
 	version    bool
 	to         string
 	from       string
 	server     string
 	port       int
+}
+
+type tagSliceValue []Tag
+
+func (s *tagSliceValue) String() string {
+	var tagStrs []string
+	for _, t := range *s {
+		tagStrs = append(tagStrs, fmt.Sprintf("%s:%s", t.Key, t.Value))
+	}
+	return strings.Join(tagStrs, ",")
+}
+
+func (s *tagSliceValue) Set(val string) error {
+	rawTags := strings.Split(val, ",")
+
+	var tags []Tag
+	for _, t := range rawTags {
+		if !strings.Contains(t, ":") {
+			return errors.New("parse error")
+		}
+
+		kv := strings.Split(t, ":")
+		if len(kv) != 2 {
+			return errors.New("parse error")
+		}
+
+		tags = append(tags, Tag{Key: kv[0], Value: kv[1]})
+	}
+
+	*s = tagSliceValue(tags)
+
+	return nil
+}
+
+func newTagSliceValue(val string, p *[]Tag) *tagSliceValue {
+	if val != "" {
+		t := (*tagSliceValue)(p)
+		if err := t.Set(val); err != nil {
+			panic(err)
+		}
+
+		return t
+	}
+	return (*tagSliceValue)(p)
 }
 
 // Run invokes the CLI with the given arguments.
@@ -48,6 +95,8 @@ func (c *CLI) Run(args []string) int {
 	flags.StringVar(&c.flags.region, "r", "", "region(Short)")
 	flags.StringVar(&c.flags.service, "service-tag", "", "value of Service tag")
 	flags.StringVar(&c.flags.service, "s", "", "value of Service tag(Short)")
+	flags.Var(newTagSliceValue("", &c.flags.customTags), "custom-tags", "key-value of Cunstom tags")
+	flags.Var(newTagSliceValue("", &c.flags.customTags), "c", "key-value of Cunstom tags(Short)")
 	flags.BoolVar(&c.flags.version, "version", false, "print version information")
 	flags.BoolVar(&c.flags.version, "v", false, "print version information(Short)")
 
@@ -91,6 +140,7 @@ func (c *CLI) run() (int, error) {
 		Region:     c.flags.region,
 		Generation: c.flags.generation,
 		Service:    c.flags.service,
+		CustomTags: c.flags.customTags,
 		Client:     NewAWSClient(),
 	}
 
