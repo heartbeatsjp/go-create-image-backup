@@ -136,37 +136,38 @@ func (client *AWSClient) CreateTags(ctx context.Context, resourceID string, tags
 	}
 
 	// check for create tag complete
-	doneCh := make(chan struct{})
-	go func() {
-		for i := 0; i < 40; i++ {
-			if strings.HasPrefix(resourceID, "ami-") {
-				result, err := client.svcEC2.DescribeImages(&ec2.DescribeImagesInput{
-					ImageIds: []*string{aws.String(resourceID)},
-				})
-				if err != nil {
-					continue
-				}
-				if len(result.Images[0].Tags) == len(tags) {
-					doneCh <- struct{}{}
-					return
-				}
-				time.Sleep(1 * time.Second)
-			} else if strings.HasPrefix(resourceID, "snap-") {
-				result, err := client.svcEC2.DescribeSnapshots(&ec2.DescribeSnapshotsInput{
-					SnapshotIds: []*string{aws.String(resourceID)},
-				})
-				if err != nil {
-					continue
-				}
-				if len(result.Snapshots[0].Tags) == len(tags) {
-					doneCh <- struct{}{}
-					return
-				}
-				time.Sleep(1 * time.Second)
+	var completed bool
+	for i := 0; i < 10; i++ {
+		if strings.HasPrefix(resourceID, "ami-") {
+			result, err := client.svcEC2.DescribeImages(&ec2.DescribeImagesInput{
+				ImageIds: []*string{aws.String(resourceID)},
+			})
+			if err != nil {
+				continue
 			}
+			if len(result.Images[0].Tags) == len(tags) {
+				completed = true
+				break
+			}
+			time.Sleep(1 * time.Second)
+		} else if strings.HasPrefix(resourceID, "snap-") {
+			result, err := client.svcEC2.DescribeSnapshots(&ec2.DescribeSnapshotsInput{
+				SnapshotIds: []*string{aws.String(resourceID)},
+			})
+			if err != nil {
+				continue
+			}
+			if len(result.Snapshots[0].Tags) == len(tags) {
+				completed = true
+				break
+			}
+			time.Sleep(time.Duration(i+1) * time.Second)
 		}
-	}()
-	<-doneCh
+	}
+
+	if !completed {
+		return errors.New("create tag was not completed while check")
+	}
 
 	return nil
 }

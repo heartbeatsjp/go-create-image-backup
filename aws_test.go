@@ -284,6 +284,45 @@ func TestCreateTags_With_Snapshot(t *testing.T) {
 	}
 }
 
+func TestCreateTags_notCompleted(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockEC2 := mock.NewMockEC2API(mockCtrl)
+	mockEC2.EXPECT().CreateTagsWithContext(
+		context.TODO(),
+		&ec2.CreateTagsInput{
+			Resources: []*string{aws.String("snap-1234567890abcdef0")},
+			Tags: []*ec2.Tag{
+				{Key: aws.String("key1"), Value: aws.String("value1")},
+				{Key: aws.String("key2"), Value: aws.String("value2")},
+				{Key: aws.String("key3"), Value: aws.String("value3")},
+			},
+		}).Return(nil, nil)
+	mockEC2.EXPECT().DescribeSnapshots(&ec2.DescribeSnapshotsInput{
+		SnapshotIds: []*string{aws.String("snap-1234567890abcdef0")},
+	}).Return(&ec2.DescribeSnapshotsOutput{
+		Snapshots: []*ec2.Snapshot{
+			{
+				Tags: []*ec2.Tag{},
+			},
+		},
+	}, nil).MaxTimes(10)
+
+	client := AWSClient{
+		svcEC2: mockEC2,
+	}
+
+	tag := []*ec2.Tag{
+		{Key: aws.String("key1"), Value: aws.String("value1")},
+		{Key: aws.String("key2"), Value: aws.String("value2")},
+		{Key: aws.String("key3"), Value: aws.String("value3")},
+	}
+	if err := client.CreateTags(context.TODO(), "snap-1234567890abcdef0", tag); err == nil {
+		t.Fatal("Expected create tag was not completed error")
+	}
+}
+
 func TestGetImages(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
