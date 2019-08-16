@@ -3,7 +3,7 @@
 [![wercker status](https://app.wercker.com/status/e49ed2149efc24b7a997fd6ee35578bb/s/master "wercker status")](https://app.wercker.com/project/byKey/e49ed2149efc24b7a997fd6ee35578bb)
 [![Go Report Card](https://goreportcard.com/badge/github.com/heartbeatsjp/go-create-image-backup)](https://goreportcard.com/report/github.com/heartbeatsjp/go-create-image-backup)
 
-backup tool with AWS Amazon machine image(AMI) written by Go.  
+A backup tool with AWS Amazon machine image(AMI) written by Go.  
 
 
 ## Example
@@ -20,15 +20,15 @@ deregister images: ami-1234567890abcdef1
 
 ## Features
 
-- Create backup for Amazon EC2 instance by Amazon machine image
+- Create a backup for Amazon EC2 instance by Amazon machine image
 - Manage backup generations per service tag-based logical group
 - Add custom tags to AMI and EBS Snapshots
 - Notify error by email
 
 
-### Create backup for Amazon EC2 instance by Amazon machine image
+### Create a backup for Amazon EC2 instance by Amazon machine image
 
-This is basic feater of `go-create-image-backup`  
+A primary feature of `go-create-image-backup`.  
 
 
 ### Manage backup generations per service tag-based logical group
@@ -49,14 +49,14 @@ The following commands are backup for the same instance. However, backup rotate 
 
 ### Add custom tags to AMI and EBS Snapshots
 
-Custom tags are feature of add any tags to AMI and EBS Snapshots that related to backup.  
-`go-create-image-backup` has `-custom-tags` option that 
+Custom tags are the feature of add any tags to AMI and EBS Snapshots that related to backup.  
+`go-create-image-backup` has `-custom-tags` option that  
 
 ```
 $ go-create-image-backup -instance-id i-1234567890abcdef0 -service-tag daily -custom-tags key1:val1,key2:val2,...
 ```
 
-In above case, add following tags to AMI of `i-1234567890abcdef0` and EBS Snapshots related that AMI. 
+In the above case, add the following tags to AMI of `i-1234567890abcdef0` and EBS Snapshots related that AMI.  
 
 |Key|Value|
 |---|---|
@@ -65,47 +65,47 @@ In above case, add following tags to AMI of `i-1234567890abcdef0` and EBS Snapsh
 
 IMPORTANT NOTICE:  
 
-Custom tags are not effect to generation management of backup.  
+Custom tags are not effecting to generation management of backup.  
 
 
 ### Notify error by email
 
 IMPORTANT NOTICE:  
 
-You should be careful when send email from Amazon EC2 instance, See also [AWS Documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/limits.html#limits-ec2).  
+You should be careful when sending email from Amazon EC2 instance, See also [AWS Documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/limits.html#limits-ec2).  
 
 
 ## Options
 
 ```
 (-backup-generation | -g) int
-  number of backup generation (default 10)
+ number of backup generation (default 10)
 (-instance-id | -i) string
-  instance id
+ instance id
 (-region | -r) string
-  region
+ region
 (-service-tag | -s) string
-  value of Service tag
+ value of Service tag
 (-custom-tags | -c) key1:val1,key2:val2,...
-  value of Cunstom tags
-(-mail-from  | -f) string
-  from-address of email notification
-(-mail-to  | -t) string
-  to-address of email notification
+ value of Cunstom tags
+(-mail-from | -f) string
+ from-address of email notification
+(-mail-to | -t) string
+ to-address of email notification
 (-mail-server | -m) string
-  mail server address (default localhost)
+ mail server address (default localhost)
 (-port | -p) int
-  mail server's port (default 25)
+ mail server's port (default 25)
 (-version | -v)
-  print version information
+ print version information
 ```
 
 
 ## Author
 
-[Takatada Yoshima](https://github.com/shiimaxx)
+[Takatada Yoshima](https://github.com/shiimaxx)  
 
 
 ## License
 
-[Apache License 2.0](https://github.com/heartbeatsjp/go-create-image-backup/blob/master/LICENSE)
+[Apache License 2.0](https://github.com/heartbeatsjp/go-create-image-backup/blob/master/LICENSE)  
