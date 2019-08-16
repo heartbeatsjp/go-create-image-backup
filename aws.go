@@ -149,7 +149,6 @@ func (client *AWSClient) CreateTags(ctx context.Context, resourceID string, tags
 				completed = true
 				break
 			}
-			time.Sleep(1 * time.Second)
 		} else if strings.HasPrefix(resourceID, "snap-") {
 			result, err := client.svcEC2.DescribeSnapshots(&ec2.DescribeSnapshotsInput{
 				SnapshotIds: []*string{aws.String(resourceID)},
@@ -161,8 +160,8 @@ func (client *AWSClient) CreateTags(ctx context.Context, resourceID string, tags
 				completed = true
 				break
 			}
-			time.Sleep(time.Duration(i+1) * time.Second)
 		}
+		time.Sleep(time.Duration(i+1) * time.Second)
 	}
 
 	if !completed {
