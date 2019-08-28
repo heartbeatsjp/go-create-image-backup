@@ -46,7 +46,7 @@ func NewAWSClient() *AWSClient {
 	sess := session.Must(session.NewSession())
 	return &AWSClient{
 		svcEC2:         ec2.New(sess, aws.NewConfig().WithRegion("ap-northeast-1")),
-		svcEC2Metadata: ec2metadata.New(session.Must(session.NewSession())),
+		svcEC2Metadata: ec2metadata.New(sess),
 	}
 }
 
