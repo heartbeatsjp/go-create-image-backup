@@ -54,8 +54,8 @@ func getRegion(svc EC2MetadataAPI) (string, error) {
 }
 
 // NewSession creates a session.
-func NewAWSSession() *session.Session {
-	return session.Must(session.NewSession())
+func NewAWSSession() (*session.Session, error) {
+	return session.NewSession()
 }
 
 // NewAWSClient creates an AWSClient.
