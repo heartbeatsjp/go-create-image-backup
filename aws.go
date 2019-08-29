@@ -38,6 +38,7 @@ type AWS interface {
 type AWSClient struct {
 	svcEC2         ec2iface.EC2API
 	svcEC2Metadata EC2MetadataAPI
+	config         *aws.Config
 }
 
 func getRegion(svc EC2MetadataAPI) (string, error) {
@@ -88,6 +89,7 @@ func NewAWSClient(sess *session.Session, region string) (*AWSClient, error) {
 	return &AWSClient{
 		svcEC2:         ec2.New(sess, config),
 		svcEC2Metadata: svcEC2Metadata,
+		config:         config,
 	}, nil
 }
 
