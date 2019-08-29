@@ -135,21 +135,18 @@ func (c *CLI) run() (int, error) {
 		return ExitCodeOK, nil
 	}
 
+	sess := NewAWSSession()
+	client, err := NewAWSClient(sess, c.flags.region)
+	if err != nil {
+		return ExitCodeAWSError, fmt.Errorf("create aws client failed: %s", err)
+	}
+
 	backup := &Backup{
 		InstanceID: c.flags.instanceID,
-		Region:     c.flags.region,
 		Generation: c.flags.generation,
 		Service:    c.flags.service,
 		CustomTags: c.flags.customTags,
-		Client:     NewAWSClient(),
-	}
-
-	if backup.Region == "" {
-		r, err := backup.Client.GetRegion()
-		if err != nil {
-			return ExitCodeAWSError, fmt.Errorf("failed to get region: %s", err.Error())
-		}
-		backup.Region = r
+		Client:     client,
 	}
 
 	if backup.InstanceID == "" {

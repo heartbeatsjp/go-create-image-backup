@@ -15,7 +15,6 @@ import (
 type Backup struct {
 	InstanceID string
 	Name       string
-	Region     string
 	Generation int
 	Service    string
 	CustomTags []Tag
@@ -24,7 +23,7 @@ type Backup struct {
 
 // Tag is key-value formatted metadata for backup
 type Tag struct {
-	Key  string
+	Key   string
 	Value string
 }
 

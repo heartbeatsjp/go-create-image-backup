@@ -24,7 +24,6 @@ type EC2MetadataAPI interface {
 
 // AWS provides methods for AWS operations.
 type AWS interface {
-	GetRegion() (string, error)
 	GetInstanceID() (string, error)
 	GetInstanceName(ctx context.Context, instanceID string) (string, error)
 	CreateImage(ctx context.Context, instanceID, name, now string) (string, error)
@@ -41,25 +40,55 @@ type AWSClient struct {
 	svcEC2Metadata EC2MetadataAPI
 }
 
-// NewAWSClient creates a new AWSClient.
-func NewAWSClient() *AWSClient {
-	sess := session.Must(session.NewSession())
-	return &AWSClient{
-		svcEC2:         ec2.New(sess, aws.NewConfig().WithRegion("ap-northeast-1")),
-		svcEC2Metadata: ec2metadata.New(sess),
+func getRegion(svc EC2MetadataAPI) (string, error) {
+	if !svc.Available() {
+		return "", errors.New("program is not running with EC2 Instance or metadata service is not available")
 	}
+
+	r, err := svc.Region()
+	if err != nil {
+		return "", err
+	}
+
+	return r, nil
 }
 
-// GetRegion returns region, this method available at AWS EC2 instance.
-func (client *AWSClient) GetRegion() (string, error) {
-	if client.svcEC2Metadata.Available() {
-		region, err := client.svcEC2Metadata.Region()
-		if err != nil {
-			return "", err
+// NewSession creates a session.
+func NewAWSSession() *session.Session {
+	return session.Must(session.NewSession())
+}
+
+// NewAWSClient creates an AWSClient.
+func NewAWSClient(sess *session.Session, region string) (*AWSClient, error) {
+	config := aws.NewConfig()
+	svcEC2Metadata := ec2metadata.New(sess)
+
+	// get region when the region did not pass via a command-line option.
+	// attempt get region is following order.
+	//   1. Load config in AWS SDK for Go
+	//     - see also https://docs.aws.amazon.com/sdk-for-go/api/aws/session/
+	//   2. Get region via EC2 Metadata
+	//   3. Set "ap-northeast-1" in hardcoding as backward compatibility for previous versions
+	if region == "" {
+		r := *sess.Config.Region
+
+		if r == "" {
+			r, _ = getRegion(svcEC2Metadata)
 		}
-		return region, nil
+
+		if r == "" {
+			r = "ap-northeast-1"
+		}
+
+		region = r
 	}
-	return "", errors.New("program is not running with EC2 Instance or metadata service is not available")
+
+	config = config.WithRegion(region)
+
+	return &AWSClient{
+		svcEC2:         ec2.New(sess, config),
+		svcEC2Metadata: svcEC2Metadata,
+	}, nil
 }
 
 // GetInstanceID returns instance id, this method available at AWS EC2 instance.

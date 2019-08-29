@@ -19,11 +19,7 @@ func TestGetRegion(t *testing.T) {
 	mockEC2Metadata.EXPECT().Region().Return("ap-northeast-1", nil)
 	mockEC2Metadata.EXPECT().Available().Return(true)
 
-	client := AWSClient{
-		svcEC2Metadata: mockEC2Metadata,
-	}
-
-	got, err := client.GetRegion()
+	got, err := getRegion(mockEC2Metadata)
 	if err != nil {
 		t.Fatal("Region failed: ", err)
 	}
@@ -41,11 +37,7 @@ func TestGetRegion_EC2Metadata_Unavailable(t *testing.T) {
 	mockEC2Metadata := mock.NewMockEC2MetadataAPI(mockCtrl)
 	mockEC2Metadata.EXPECT().Available().Return(false)
 
-	client := AWSClient{
-		svcEC2Metadata: mockEC2Metadata,
-	}
-
-	_, got := client.GetRegion()
+	_, got := getRegion(mockEC2Metadata)
 
 	want := "program is not running with EC2 Instance or metadata service is not available"
 	if got.Error() != want {
