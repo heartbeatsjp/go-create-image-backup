@@ -37,7 +37,7 @@ func (b *Backup) Create(ctx context.Context) (string, error) {
 
 	isASCII := true
 	for _, c := range []byte(imageName) {
-		if c >= unicode.MaxASCII {
+		if c > unicode.MaxASCII {
 			isASCII = false
 			break
 		}
