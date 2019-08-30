@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -32,7 +33,21 @@ func (b *Backup) Create(ctx context.Context) (string, error) {
 	const layout = "200601021504"
 	now := time.Now().Format(layout)
 
-	imageID, err := b.Client.CreateImage(ctx, b.InstanceID, b.Name, now)
+	imageName := b.Name
+
+	isASCII := true
+	for _, c := range []byte(imageName) {
+		if c >= unicode.MaxASCII {
+			isASCII = false
+			break
+		}
+	}
+
+	if !isASCII {
+		imageName = b.InstanceID
+	}
+
+	imageID, err := b.Client.CreateImage(ctx, b.InstanceID, imageName, now)
 	if err != nil {
 		return "", err
 	}
