@@ -245,6 +245,9 @@ func (client *AWSClient) GetSnapshots(ctx context.Context, imageID string) ([]st
 
 	var snapshots []string
 	for _, b := range result.Images[0].BlockDeviceMappings {
+		if b.Ebs == nil {
+			continue
+		}
 		snapshots = append(snapshots, *b.Ebs.SnapshotId)
 	}
 
