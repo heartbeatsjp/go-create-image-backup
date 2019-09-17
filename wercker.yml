@@ -9,7 +9,9 @@ build:
     code: "export GO111MODULE=on"
   - script:
     name: "Run goimports"
-    code: "goimports -d -e ./ | xargs -r false"
+    code: |
+      GO111MODULE=off go get golang.org/x/tools/cmd/goimports
+      goimports -d -e ./ | xargs -r false
   - script:
     name: "Run test"
     code: "go test -v ./..."
