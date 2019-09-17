@@ -1,30 +1,28 @@
-box: "netmarkjp/golang-build:1.10"
+box: golang
+
 build:
   steps:
   - wercker/setup-go-workspace:
-      package-dir: github.com/heartbeatsjp/go-create-image-backup
+    package-dir: github.com/heartbeatsjp/go-create-image-backup
   - script:
-      name: "dep ensure"
-      code: "dep ensure"
+    name: "Enable Go Modules"
+    code: "export GO111MODULE=on"
   - script:
-      name: "goimports"
-      code: "goimports -d -e $(find . -type f -name '*.go' | grep -v './vendor')"
+    name: "Run goimports"
+    code: |
+      GO111MODULE=off go get golang.org/x/tools/cmd/goimports
+      goimports -d -e ./ | xargs -r false
   - script:
-      name: "go test"
-      code: "go test -v ./..."
-  - tcnksm/gox:
-      os: "darwin linux windows"
-      arch: "amd64"
-      ldflags: "-w -s"
+    name: "Run test"
+    code: "go test -v ./..."
   - script:
-      name: "archive"
-      code: |
-        DIST_DIR="${WERCKER_OUTPUT_DIR:?}/dist"
-        mkdir ${DIST_DIR:?} || true
-        cd ${WERCKER_OUTPUT_DIR:?}/pkg
-        find . -mindepth 1 -maxdepth 1 -type d | while read line; do tar zcfp ${DIST_DIR:?}/$line.tar.gz ${line:?} ; done
-        cd ${DIST_DIR:?}
-        md5sum * > MD5SUM
+    name: "Build and archive"
+    code: |
+      GO111MODULE=off go get github.com/Songmu/goxz/cmd/goxz
+      DIST_DIR="${WERCKER_OUTPUT_DIR:?}/dist"
+      mkdir ${DIST_DIR:?} || true
+      goxz -pv=$(git describe --tags) -os=darwin,linux,windows -arch=amd64 -d ${DIST_DIR:?} ./
+
 deploy:
   steps:
   - tcnksm/ghr:
