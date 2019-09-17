@@ -54,7 +54,7 @@ func getRegion(svc EC2MetadataAPI) (string, error) {
 	return r, nil
 }
 
-// NewSession creates a session.
+// NewAWSSession creates a new aws session.
 func NewAWSSession() (*session.Session, error) {
 	return session.NewSession()
 }

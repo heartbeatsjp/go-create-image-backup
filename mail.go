@@ -4,12 +4,15 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
+// Mail provides methords for send mail
 type Mail interface {
 	Send(mailTo, host, body string, port int) error
 }
 
+// MailClient implements Mail interface
 type MailClient struct{}
 
+// Send sends email
 func (m *MailClient) Send(mailFrom, mailTo, host, body string, port int) error {
 	message := gomail.NewMessage()
 	message.SetHeader("From", mailFrom)
