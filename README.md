@@ -75,6 +75,19 @@ IMPORTANT NOTICE:
 You should be careful when sending email from Amazon EC2 instance, See also [AWS Documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/limits.html#limits-ec2).  
 
 
+### IAM requirements
+
+You need to create and use policy which has permissions to `go-create-image-backup` can use following AWS APIs.  
+
+- CreateImage
+- CreateTags
+- DeleteSnapshot
+- DeregisterImage
+- DescribeImages
+- DescribeSnapshots
+- DescribeTags
+
+
 ## Options
 
 ```
