@@ -2,6 +2,10 @@
 
 [![wercker status](https://app.wercker.com/status/e49ed2149efc24b7a997fd6ee35578bb/s/master "wercker status")](https://app.wercker.com/project/byKey/e49ed2149efc24b7a997fd6ee35578bb)
 [![Go Report Card](https://goreportcard.com/badge/github.com/heartbeatsjp/go-create-image-backup)](https://goreportcard.com/report/github.com/heartbeatsjp/go-create-image-backup)
+[![Not Maintained](https://img.shields.io/badge/Maintenance%20Level-Abandoned-orange.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
+
+**Note: This repository is no longer maintained.**  
+**Use [AWS Backup](https://aws.amazon.com/backup/).**
 
 A backup tool with AWS Amazon machine image(AMI) written by Go.  
 
